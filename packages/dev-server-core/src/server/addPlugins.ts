@@ -3,6 +3,7 @@ import { transformModuleImportsPlugin } from '../plugins/transformModuleImportsP
 import { webSocketsPlugin } from '../web-sockets/webSocketsPlugin';
 import { mimeTypesPlugin } from '../plugins/mimeTypesPlugin';
 import { Logger } from '../logger/Logger';
+import { openElementInEditorPlugin } from '../plugins/openElementInEditorPlugin';
 
 export function addPlugins(logger: Logger, config: DevServerCoreConfig) {
   if (!config.plugins) {
@@ -20,5 +21,10 @@ export function addPlugins(logger: Logger, config: DevServerCoreConfig) {
   if (config.plugins?.some(pl => 'resolveImport' in pl || 'transformImport' in pl)) {
     // transform module imports must happen after all other plugins did their regular transforms
     config.plugins.push(transformModuleImportsPlugin(logger, config.plugins, config.rootDir));
+  }
+
+  // TODO: Check
+  if (true) {
+    config.plugins.push(openElementInEditorPlugin(logger, config.plugins, config.rootDir));
   }
 }

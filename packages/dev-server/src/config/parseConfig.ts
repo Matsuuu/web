@@ -8,6 +8,7 @@ import { esbuildPlugin } from '../plugins/esbuildPlugin';
 import { watchPlugin } from '../plugins/watchPlugin';
 import { nodeResolvePlugin } from '../plugins/nodeResolvePlugin';
 import { DevServerStartError } from '../DevServerStartError';
+import { openElementInEditorPlugin } from '../plugins/openElementInEditorPlugin';
 
 const defaultConfig: Partial<DevServerConfig> = {
   rootDir: process.cwd(),
@@ -100,6 +101,7 @@ export async function parseConfig(
   if (finalConfig.watch) {
     finalConfig.plugins!.unshift(watchPlugin());
   }
+  finalConfig.plugins!.push(openElementInEditorPlugin(finalConfig.rootDir!))
 
   return finalConfig;
 }
