@@ -2,10 +2,10 @@ import { Plugin } from '../plugins/Plugin.js';
 import { NAME_WEB_SOCKET_IMPORT, NAME_WEB_SOCKET_API } from './WebSocketsManager.js';
 import { appendToDocument, isHtmlFragment } from '@web/parse5-utils';
 
-export const webSocketScript = `<!-- injected by web-dev-server -->
-<script type="module" src="${NAME_WEB_SOCKET_IMPORT}"></script>`;
+export const webSocketScript = (basePath?: string) => `<!-- injected by web-dev-server -->
+<script type="module" src="${basePath ? `${basePath}${NAME_WEB_SOCKET_IMPORT}` : NAME_WEB_SOCKET_IMPORT}"></script>`;
 
-export function webSocketsPlugin(): Plugin {
+export function webSocketsPlugin(basePath?: string): Plugin {
   return {
     name: 'web-sockets',
 
@@ -128,7 +128,7 @@ export function webSocketsPlugin(): Plugin {
 
 
 const { protocol, host } = new URL(import.meta.url);
-const webSocketUrl = \`ws\${protocol === 'https:' ? 's' : ''}://\${host}/${NAME_WEB_SOCKET_API}\`;
+const webSocketUrl = \`ws\${protocol === 'https:' ? 's' : ''}://\${host}${basePath ? `${basePath}/${NAME_WEB_SOCKET_API}` : `/${NAME_WEB_SOCKET_API}`}\`;
 
 export let webSocket;
 export let webSocketOpened;
@@ -147,7 +147,7 @@ function setupWebSocket() {
     // if window is an iframe and accessing a cross origin frame is not allowed this will throw
     // therefore we try/catch it here so it does not disable all web sockets
     if (window.parent !== window && window.parent.__WDS_WEB_SOCKET__ !== undefined) {
-      useParent = true;
+      useParent = false;
     }
   } catch(e) {}
 
@@ -258,7 +258,7 @@ if (!!navigator.userAgent.match(/Trident/)) {
         if (isHtmlFragment(context.body)) {
           return;
         }
-        return appendToDocument(context.body, webSocketScript);
+        return appendToDocument(context.body, webSocketScript(basePath));
       }
     },
   };

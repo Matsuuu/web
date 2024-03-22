@@ -20,12 +20,14 @@ export class WebSocketsManager extends EventEmitter<Events> {
   public webSocketServer: WebSocket.Server;
   private openSockets = new Set<WebSocket>();
 
-  constructor(server: Server) {
+  constructor(server: Server, basePath?: string) {
     super();
 
     this.webSocketServer = new WebSocket.Server({
       noServer: true,
-      path: `/${NAME_WEB_SOCKET_API}`,
+      path: basePath 
+        ? `${basePath}/${NAME_WEB_SOCKET_API}`
+        : `/${NAME_WEB_SOCKET_API}`,
     });
     this.webSocketServer.on('connection', webSocket => {
       this.openSockets.add(webSocket);

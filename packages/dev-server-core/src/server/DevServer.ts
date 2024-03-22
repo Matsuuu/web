@@ -32,7 +32,7 @@ export class DevServer {
     this.koaApp = app;
     if (server) {
       this.server = server;
-      this.webSockets = new WebSocketsManager(this.server);
+      this.webSockets = new WebSocketsManager(this.server, config.basePath);
       this.server.on('connection', connection => {
         this.connections.add(connection);
         connection.on('close', () => {
@@ -43,7 +43,7 @@ export class DevServer {
       typeof this.config.middlewareMode === 'object' &&
       this.config.middlewareMode.server
     ) {
-      this.webSockets = new WebSocketsManager(this.config.middlewareMode.server);
+      this.webSockets = new WebSocketsManager(this.config.middlewareMode.server, this.config.basePath);
     }
   }
 
